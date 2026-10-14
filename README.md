@@ -1,6 +1,6 @@
 # BJIT Meals
 
-A small three-tier meal management application for managing people, the daily menu, and meal orders.
+A small three-tier meal management application for managing people, the daily menu, and meal orders!
 
 ## Stack
 
