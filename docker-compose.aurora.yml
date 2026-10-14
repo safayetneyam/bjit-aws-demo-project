@@ -1,0 +1,6 @@
+services:
+  db:
+    profiles:
+      - local-only
+  backend:
+    depends_on: !reset []

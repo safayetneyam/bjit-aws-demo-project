@@ -1,0 +1,45 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        Int          @id @default(autoincrement())
+  name      String
+  email     String       @unique
+  phone     String?
+  address   String?
+  orders    MealOrder[]
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+}
+
+model MenuItem {
+  id          Int          @id @default(autoincrement())
+  name        String
+  description String?
+  price       Decimal      @db.Decimal(10, 2)
+  category    String
+  available   Boolean      @default(true)
+  orders      MealOrder[]
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+}
+
+model MealOrder {
+  id         Int      @id @default(autoincrement())
+  quantity   Int      @default(1)
+  orderDate  DateTime @default(now())
+  status     String   @default("PENDING")
+  notes      String?
+  userId     Int
+  menuItemId Int
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  menuItem   MenuItem @relation(fields: [menuItemId], references: [id], onDelete: Restrict)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
