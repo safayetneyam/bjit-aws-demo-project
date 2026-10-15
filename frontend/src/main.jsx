@@ -31,7 +31,7 @@ function App() {
   return <div className="app-shell">
     <header className="topbar"><div className="brand"><span className="brand-mark">B</span><div><strong>BJIT Meals</strong><small>Kitchen operations</small></div></div><div className="status"><i /> API connected</div></header>
     <main>
-      <section className="intro"><div><p className="eyebrow">MEAL MANAGEMENT</p><h1>Keep the day well fed.</h1><p className="subtitle">A clear view of people, plates, and orders across BJIT.</p></div><div className="date-chip">{new Intl.DateTimeFormat('en', { dateStyle: 'full' }).format(new Date())}</div></section>
+      <section className="intro"><h1>BJIT Meals</h1><div className="date-chip">{new Intl.DateTimeFormat('en', { dateStyle: 'full' }).format(new Date())}</div></section>
       <nav className="tabs">{[['orders', 'Orders', orders.length], ['bills', 'Bills', '৳'], ['menu', 'Menu', menu.length], ['users', 'People', users.length]].map(([key, label, count]) => <button className={tab === key ? 'active' : ''} onClick={() => setTab(key)} key={key}>{label}<span>{count}</span></button>)}</nav>
       {notice && <div className="notice" onClick={() => setNotice('')}>{notice} <b>×</b></div>}
       {tab === 'orders' && <Orders orders={orders} users={users} menu={menu} form={orderForm} setForm={setOrderForm} run={run} />}
