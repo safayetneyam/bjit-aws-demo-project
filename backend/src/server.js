@@ -6,6 +6,7 @@ const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 const app = express();
 const port = Number(process.env.PORT || 4000);
+const mealCategories = new Set(['Breakfast', 'Lunch', 'Dinner']);
 
 app.use(cors({ origin: process.env.CORS_ORIGIN || true }));
 app.use(express.json());
@@ -24,6 +25,14 @@ const required = (body, fields) => {
       throw error;
     }
   }
+};
+const validCategory = (value) => {
+  if (!mealCategories.has(value)) {
+    const error = new Error('category must be Breakfast, Lunch, or Dinner');
+    error.status = 400;
+    throw error;
+  }
+  return value;
 };
 const dayStart = (value) => {
   if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) {
@@ -48,9 +57,9 @@ app.delete('/api/users/:id', async (req, res) => { await prisma.user.delete({ wh
 app.get('/api/menu', async (_req, res) => res.json(await prisma.menuItem.findMany({ orderBy: { createdAt: 'desc' } })));
 app.post('/api/menu', async (req, res) => {
   required(req.body, ['name', 'price', 'category']);
-  res.status(201).json(await prisma.menuItem.create({ data: { ...req.body, price: Number(req.body.price) } }));
+  res.status(201).json(await prisma.menuItem.create({ data: { ...req.body, category: validCategory(req.body.category), price: Number(req.body.price) } }));
 });
-app.put('/api/menu/:id', async (req, res) => res.json(await prisma.menuItem.update({ where: { id: integerId(req.params.id) }, data: { ...req.body, ...(req.body.price !== undefined && { price: Number(req.body.price) }) } })));
+app.put('/api/menu/:id', async (req, res) => res.json(await prisma.menuItem.update({ where: { id: integerId(req.params.id) }, data: { ...req.body, ...(req.body.category !== undefined && { category: validCategory(req.body.category) }), ...(req.body.price !== undefined && { price: Number(req.body.price) }) } })));
 app.delete('/api/menu/:id', async (req, res) => { await prisma.menuItem.delete({ where: { id: integerId(req.params.id) } }); res.status(204).end(); });
 
 const orderInclude = { user: true, menuItem: true };

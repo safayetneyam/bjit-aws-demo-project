@@ -15,7 +15,8 @@ A small three-tier meal management application for managing people, the daily me
 docker compose up --build
 ```
 
-Open the frontend at [http://localhost](http://localhost). The API health check is available at `http://localhost:4000/api/health`.
+Open the frontend at [http://localhost](http://localhost). The API health check is available at `http://localhost/api/health`.
+The frontend Nginx container reverse-proxies `/api` to the backend, so only the frontend port needs to be exposed publicly.
 
 The first backend start runs `prisma db push` to create/update the tables from the Prisma schema. Local MySQL data persists in the `mysql_data` Docker volume.
 
@@ -36,6 +37,14 @@ docker compose -f docker-compose.yml -f docker-compose.aurora.yml up --build bac
 ```
 
 Do not commit `.env`; it is ignored by Git. Use `.env.example` as the template for other environments.
+
+## Local and EC2 port configuration
+
+The frontend is exposed on `FRONTEND_PORT` (80 by default). The backend listens
+on the internal Docker port `BACKEND_CONTAINER_PORT` and is reverse-proxied by
+the frontend. For local direct debugging, uncomment the local bind settings in
+`.env`. For EC2, keep the EC2 settings enabled; configure the security group to
+allow inbound TCP port 80 and do not open ports 3306 or 4000.
 
 ## CRUD API
 

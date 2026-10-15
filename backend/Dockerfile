@@ -5,5 +5,6 @@ RUN npm install
 COPY prisma ./prisma
 RUN npx prisma generate
 COPY src ./src
-EXPOSE 4000
+ARG BACKEND_CONTAINER_PORT=4000
+EXPOSE $BACKEND_CONTAINER_PORT
 CMD ["npm", "start"]
